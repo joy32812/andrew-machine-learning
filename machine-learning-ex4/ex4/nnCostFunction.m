@@ -96,22 +96,45 @@ Z = -(Y .* log(B)) - ((1 - Y) .* log(1 - B));
 
 J = sum(Z(:)) / m;
 
-R = lambda * (sum((Theta1 .^ 2)(:)) + sum((Theta2 .^ 2)(:))) / (2 * m);
+
+Theta1NoBias = Theta1(:, 2:end);
+Theta2NoBias = Theta2(:, 2:end);
+R = lambda * (sum((Theta1NoBias .^ 2)(:)) + sum((Theta2NoBias .^ 2)(:))) / (2 * m);
 
 J = J + R;
+
+
 
 % Part 2
 
 
+a1 = X;
+
+z2 = X * Theta1';
+a2 = sigmoid(z2);
+a2 = [ones(size(a2, 1), 1) a2];
+
+z3 = a2 * Theta2';
+a3 = sigmoid(z3);
 
 
+Y = eye(num_labels)(y, :);
 
+d3 = a3 - Y;
 
+d2 = d3 * Theta2NoBias .* sigmoidGradient(z2);
 
+Theta2_grad = d3' * a2 / m;
+Theta1_grad = d2' * a1 / m;
 
 
 
 % -------------------------------------------------------------
+
+
+
+Theta1_grad(:, 2:end) += ((lambda / m) * Theta1NoBias);
+Theta2_grad(:, 2:end) += ((lambda / m) * Theta2NoBias);
 
 % =========================================================================
 
