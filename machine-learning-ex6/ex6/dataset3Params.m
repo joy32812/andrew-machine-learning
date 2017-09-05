@@ -24,6 +24,22 @@ sigma = 0.3;
 %
 
 
+minError = -1;
+C = 0.01;
+sigma = 0.01;
+for tc = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30]
+	for ts = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30]
+		model= svmTrain(X, y, tc, @(x1, x2) gaussianKernel(x1, x2, ts)); 
+
+		predictions = svmPredict(model, Xval);
+		tmpError = mean(double(predictions ~= yval));
+		if (minError == -1 || minError > tmpError) 
+			minError = tmpError;
+			C = tc;
+			sigma = ts;
+		endif
+	endfor
+endfor
 
 
 
