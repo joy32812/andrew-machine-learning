@@ -23,7 +23,11 @@ idx = zeros(size(X,1), 1);
 
 
 
-
+m = size(X, 1);
+for i = 1:m
+	t = X(i, :);
+	[z, idx(i)] = min(sum((centroids - t) .^ 2, 2));
+endfor
 
 
 
